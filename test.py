@@ -6,6 +6,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import logging
 import time
+from enum import Enum
+import os
 
 class StormStudioBot:
     def __init__(self, driver_path=None):
@@ -46,15 +48,49 @@ class StormStudioBot:
         time.sleep(delay)
         self.driver.quit()
 
+class Region(Enum):
+    EU = 1
+    UK = 2
+
+def get_region_url(region):
+    if region == Region.EU:
+        return "https://www.timeforstorm.eu/stormstudio/login/content%20guru/8a46c4ac0c101da5#/login/content%20guru/8a46c4ac0c101da5%20storm%20STUDIO%E2%84%A2"
+    elif region == Region.UK:
+        return "https://www.timeforstorm.com/stormstudio/login/content%20guru/8a46c4ac0c101da5"
+    else:
+        raise ValueError("Invalid region")
+
+def ask_region():
+    print("Select region:")
+    print("1. EU")
+    print("2. UK")
+    while True:
+        choice = input("Enter 1 for EU or 2 for UK: ").strip()
+        if choice == "1":
+            os.system('clear' if os.name == 'posix' else 'cls')
+            return Region.EU
+        elif choice == "2":
+            os.system('clear' if os.name == 'posix' else 'cls')
+            return Region.UK
+        else:
+            os.system('clear' if os.name == 'posix' else 'cls')
+            print("Invalid input. Please try again.")
+        
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
+    region = ask_region()
+    url = get_region_url(region)
     bot = StormStudioBot()
     try:
+        organisation = input("Enter organisation name: ").strip()
+        username = "red01"
         bot.login(
-            url="https://www.timeforstorm.eu/stormstudio/login/content%20guru/8a46c4ac0c101da5#/login/content%20guru/8a46c4ac0c101da5%20storm%20STUDIO%E2%84%A2",
-            organisation="Allianz Europe 01 Test",
-            username="red01"
+            url=url,
+            organisation=organisation,
+            username=username
         )
+        os.system('clear' if os.name == 'posix' else 'cls')
         logging.info("Login successful!")
     except Exception as e:
         logging.error(f"Error: {e}")

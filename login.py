@@ -12,7 +12,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from info_details import get_access_profiles, get_rights_profiles 
+from info_details import get_access_profiles, get_rights_profiles, get_user_ids
 
 class StormStudioBot:
     def __init__(self, driver_path=None):
@@ -100,20 +100,23 @@ if __name__ == "__main__":
 
     access_profiles = get_access_profiles(bot, token, base_url)
     rights_profiles = get_rights_profiles(bot, token, base_url)
+    user_ids = get_user_ids(bot, token, base_url)
 
     access_name = input("Nome do Access Profile: ").strip()
     rights_name = input("Nome do Rights Profile: ").strip()
+    user_name = input("Nome do Utilizador: ").strip()
 
     access_profile_id = next((pid for pid, name in access_profiles.items() if name == access_name), None)
     rights_profile_id = next((pid for pid, info in rights_profiles.items() if info["name"] == rights_name), None)
+    user_name_id = user_ids.get(user_name)
 
-    if not access_profile_id or not rights_profile_id:
+    if not access_profile_id or not rights_profile_id or not user_name_id:
         print("Nome(s) não encontrados.")
         bot.quit()
         exit()
 
     payload = {
-        "userId": "82831", # CCS Test (CCS_AZIE)
+        "userId": str(user_name_id),
         "profileId": str(rights_profile_id),
         "objectProfileId": str(access_profile_id),
         "szSecurityToken": token,
@@ -122,6 +125,7 @@ if __name__ == "__main__":
         "appUrl": base_url
     }
 
+    print("Payload:", payload)
 
     headers_post = {
         "Content-Type": "application/x-www-form-urlencoded",

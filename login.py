@@ -12,6 +12,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from info_details import get_access_profiles, get_rights_profiles 
 
 class StormStudioBot:
     def __init__(self, driver_path=None):
@@ -48,10 +49,6 @@ class StormStudioBot:
             except:
                 continue
         return None
-
-    def quit(self, delay=5):
-        time.sleep(delay)
-        self.driver.quit()
 
 class Region(Enum):
     EU = 1
@@ -101,15 +98,30 @@ if __name__ == "__main__":
     for cookie in bot.driver.get_cookies():
         session.cookies.set(cookie['name'], cookie['value'])
 
+    access_profiles = get_access_profiles(bot, token, base_url)
+    rights_profiles = get_rights_profiles(bot, token, base_url)
+
+    access_name = input("Nome do Access Profile: ").strip()
+    rights_name = input("Nome do Rights Profile: ").strip()
+
+    access_profile_id = next((pid for pid, name in access_profiles.items() if name == access_name), None)
+    rights_profile_id = next((pid for pid, info in rights_profiles.items() if info["name"] == rights_name), None)
+
+    if not access_profile_id or not rights_profile_id:
+        print("Nome(s) não encontrados.")
+        bot.quit()
+        exit()
+
     payload = {
         "userId": "82831", # CCS Test (CCS_AZIE)
-        "profileId": "1808", #APEU Supervisor Voice # RIGHTS PROFILE
-        "objectProfileId": "0", #All # ACCESS PROFILE
+        "profileId": str(rights_profile_id),
+        "objectProfileId": str(access_profile_id),
         "szSecurityToken": token,
         "securityToken": token,
         "lang": "en",
         "appUrl": base_url
     }
+
 
     headers_post = {
         "Content-Type": "application/x-www-form-urlencoded",

@@ -102,9 +102,9 @@ if __name__ == "__main__":
         session.cookies.set(cookie['name'], cookie['value'])
 
     payload = {
-        "userId": "82831",
-        "profileId": "1808",
-        "objectProfileId": "0",
+        "userId": "82831", # CCS Test (CCS_AZIE)
+        "profileId": "1808", #APEU Supervisor Voice # RIGHTS PROFILE
+        "objectProfileId": "0", #All # ACCESS PROFILE
         "szSecurityToken": token,
         "securityToken": token,
         "lang": "en",

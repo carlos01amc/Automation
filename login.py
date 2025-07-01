@@ -13,6 +13,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from info_details import get_access_profiles, get_rights_profiles, get_user_ids
+from extract_data import process_csv_users
 
 class StormStudioBot:
     def __init__(self, driver_path=None):
@@ -102,40 +103,62 @@ if __name__ == "__main__":
     rights_profiles = get_rights_profiles(bot, token, base_url)
     user_ids = get_user_ids(bot, token, base_url)
 
-    access_name = input("Nome do Access Profile: ").strip()
-    rights_name = input("Nome do Rights Profile: ").strip()
-    user_name = input("Nome do Utilizador: ").strip()
+    def process_csv_and_assign():
+        while True:
+            csv_path = input("Enter the path to the CSV file with user data: ").strip()
+            data = process_csv_users(csv_path)
 
-    access_profile_id = next((pid for pid, name in access_profiles.items() if name == access_name), None)
-    rights_profile_id = next((pid for pid, info in rights_profiles.items() if info["name"] == rights_name), None)
-    user_name_id = user_ids.get(user_name)
+            for row in data:
+                username = row.get("Username")
+                access_profile = row.get("AccessProfile")
+                rights_profile = row.get("RightsProfile")
 
-    if not access_profile_id or not rights_profile_id or not user_name_id:
-        print("Nome(s) não encontrados.")
-        bot.quit()
-        exit()
+                if not username or not rights_profile:
+                    print(f"Skipping row due to missing data: {row}")
+                    continue
 
-    payload = {
-        "userId": str(user_name_id),
-        "profileId": str(rights_profile_id),
-        "objectProfileId": str(access_profile_id),
-        "szSecurityToken": token,
-        "securityToken": token,
-        "lang": "en",
-        "appUrl": base_url
-    }
+                access_profile_id = next((pid for pid, name in access_profiles.items() if name == access_profile), None)
+                rights_profile_id = next((pid for pid, info in rights_profiles.items() if info["name"] == rights_profile), None)
+                user_name_id = user_ids.get(username)
 
-    print("Payload:", payload)
+                if not rights_profile_id or not user_name_id:
+                    print(f"Profile(s) not found for user {username}. Skipping.")
+                    continue
 
-    headers_post = {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Accept": "*/*",
-        "Referer": f"{base_url}/userprofiles",
-        "User-Agent": "Mozilla/5.0",
-        "X-Requested-With": "XMLHttpRequest"
-    }
+                if not access_profile_id:
+                    access_profile_id = 0 # All access profile
+                    access_profile = "All"
 
-    response = session.post(post_url, headers=headers_post, data=payload)
+                payload = {
+                    "userId": str(user_name_id),
+                    "profileId": str(rights_profile_id),
+                    "objectProfileId": str(access_profile_id),
+                    "szSecurityToken": token,
+                    "securityToken": token,
+                    "lang": "en",
+                    "appUrl": base_url
+                }
 
-    print("Status Code:", response.status_code)
-    print("Response:", response.text or "[Resposta vazia]")
+                headers_post = {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Accept": "*/*",
+                    "Referer": f"{base_url}/userprofiles",
+                    "User-Agent": "Mozilla/5.0",
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+
+                response = session.post(post_url, headers=headers_post, data=payload)
+
+                if response.status_code == 200:
+                    print(f"Successfully assigned {username} to {rights_profile} with access profile {access_profile}.")
+                else:
+                    print(f"Failed to assign {username}: {response.status_code} - {response.text}")
+
+            again = input("Do you want to process another CSV file? (y/n): ").strip().lower()
+            if again != "y":
+                print("Finished processing CSV files.")
+                break
+
+    process_csv_and_assign()
+
+   

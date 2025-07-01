@@ -1,0 +1,63 @@
+# StormStudioBot Automation Script
+
+This script automates the process of logging into the Storm Studio web application, navigating to user profiles, extracting a security token from network logs, and performing an assignment operation via HTTP POST.
+
+## Features
+
+- Automated login to Storm Studio (EU or UK region)
+- Navigation to user profiles section
+- Extraction of security token from browser network logs
+- HTTP POST request to add an assignment using extracted token and session cookies
+
+## Requirements
+
+- Python 3.7+
+- Google Chrome browser
+- ChromeDriver (matching your Chrome version)
+- Python packages:
+    - selenium
+    - requests
+
+## Installation
+
+1. Install required Python packages:
+     ```
+     pip install selenium requests
+     ```
+
+2. Download ChromeDriver and ensure it's in your PATH or specify its location in the script.
+
+## Usage
+
+1. Run the script:
+     ```
+     python login.py
+     ```
+
+2. Follow the prompts:
+     - Select region (EU or UK)
+     - Enter organisation name
+
+3. The script will:
+     - Log in as user `red01`
+     - Navigate to user profiles
+     - Extract the security token
+     - Perform an assignment POST request
+     - Print the status code and response
+
+## Notes
+
+- The script uses Selenium WebDriver to automate browser actions.
+- Make sure your ChromeDriver version matches your installed Chrome browser.
+- The script is intended for automation/testing purposes only.
+
+## Disclaimer
+
+Use this script responsibly and only with proper authorization. The author is not responsible for misuse.
+
+## Upcoming Updates / Next Release
+
+- The next version of this script will introduce support for batch processing.
+- It will read user IDs and rights/profile mappings from CSV files.
+- The automation will loop through each entry in the CSV, performing assignments for multiple users automatically.
+- This enhancement will streamline bulk user management and rights assignment tasks.

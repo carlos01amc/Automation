@@ -32,7 +32,7 @@ Your CSV must follow this format:
 
 - `username`, `rights profile`, `Acces Profile` – must match exact format in storm.
 
-👉 **To give the user All access Profile**, use `` for the `Access Profile` (it will automatically select the "All Access Profile").
+👉 **To give the user All access Profile**, leave it blank for the `Access Profile` (it will automatically select the "All Access Profile").
 
 ## 🧑‍💻 How to Use It (Step by Step)
 

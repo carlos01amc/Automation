@@ -4,14 +4,25 @@ import csv
 REQUIRED_HEADERS = {"Username", "RightsProfile", "AccessProfile"}
 
 def process_csv_users(path):
-    if not os.path.exists(path):
-        print("Error: File does not exist.")
-        return None
+    while True:
+        if not os.path.exists(path):
+            os.system('clear' if os.name == 'posix' else 'cls')
+            print("Error: File does not exist.")
+            path = input("Enter the CSV file path to retry: ")
+            continue
 
-    with open(path, newline='', encoding='utf-8') as csvfile:
-        reader = csv.DictReader(csvfile)
-        if not REQUIRED_HEADERS.issubset(reader.fieldnames):
-            print("Error: Missing headers:", REQUIRED_HEADERS - set(reader.fieldnames))
-            return None
-        data = list(reader)
-        return data
+        with open(path, newline='', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            if reader.fieldnames is None or not REQUIRED_HEADERS.issubset(reader.fieldnames):
+                os.system('clear' if os.name == 'posix' else 'cls')
+                missing = REQUIRED_HEADERS - set(reader.fieldnames or [])
+                print("Error: Missing headers:", missing)
+                path = input("Enter the CSV file path to retry: ")
+                continue
+            data = list(reader)
+            if not data:
+                os.system('clear' if os.name == 'posix' else 'cls')
+                print("Error: CSV file is empty.")
+                path = input("Enter the CSV file path to retry: ")
+                continue
+            return data

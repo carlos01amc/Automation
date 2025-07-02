@@ -25,7 +25,7 @@ Before running this tool, make sure you have the following installed on your com
 
 Your CSV must follow this format:
 
-| Username           | Rights Profile      | Access Profile |
+| Username           | RightsProfile      | AccessProfile |
 |--------------------|--------|------------|
 | CG Agent01 (CGAgent01)  | APEU Agent Voice | AZES |
 | CG Agent02 (CGAgent02)  | APEU Agent Voice | AZES |

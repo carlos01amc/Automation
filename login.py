@@ -18,9 +18,10 @@ from extract_data import process_csv_users
 class StormStudioBot:
     def __init__(self, driver_path=None):
         options = Options()
-        options.add_argument("--start-maximized")
         options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
-        service = Service(executable_path=driver_path) if driver_path else Service()
+        options.add_argument("--log-level=3") 
+        options.add_experimental_option("excludeSwitches", ["enable-logging"])
+        service = Service(executable_path=driver_path, log_path=os.devnull) if driver_path else Service()
         self.driver = webdriver.Chrome(service=service, options=options)
         self.wait = WebDriverWait(self.driver, 30)
 
@@ -29,7 +30,16 @@ class StormStudioBot:
         input_box = self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, '#prefix_search input')))
         input_box.send_keys(organisation)
         input_box.send_keys(Keys.ENTER)
-        self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'el-select'))).click()
+        for _ in range(10):
+            try:
+                dropdown = self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'el-select')))
+                dropdown.click()
+                break
+            except:
+                time.sleep(1)
+        else:
+            raise Exception("User dropdown not clickable after multiple attempts")
+        time.sleep(0.5)
         self.wait.until(EC.element_to_be_clickable((
             By.XPATH, f"//li[contains(@class, 'el-select-dropdown__item') and contains(., '{username}')]"
         ))).click()

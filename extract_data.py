@@ -11,6 +11,12 @@ def process_csv_users(path):
             path = input("Enter the CSV file path to retry: ")
             continue
 
+        if not path.lower().endswith('.csv'):
+            os.system('clear' if os.name == 'posix' else 'cls')
+            print("Error: File is not a CSV.")
+            path = input("Enter the CSV file path to retry: ")
+            continue
+
         with open(path, newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             if reader.fieldnames is None or not REQUIRED_HEADERS.issubset(reader.fieldnames):

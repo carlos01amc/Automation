@@ -118,13 +118,13 @@ if __name__ == "__main__":
             csv_path = input("Enter the path to the CSV file with user data: ").strip()
             data = process_csv_users(csv_path)
 
-            for row in data:
+            for idx, row in enumerate(data, start=2):
                 username = row.get("Username")
                 access_profile = row.get("AccessProfile")
                 rights_profile = row.get("RightsProfile")
 
                 if not username or not rights_profile:
-                    print(f"Skipping row due to missing data: {row}")
+                    logging.warning(f"Row {idx}: Skipping due to missing data: {row}")
                     continue
 
                 access_profile_id = next((pid for pid, name in access_profiles.items() if name == access_profile), None)
@@ -132,7 +132,7 @@ if __name__ == "__main__":
                 user_name_id = user_ids.get(username)
 
                 if not rights_profile_id or not user_name_id:
-                    print(f"Profile(s) not found for user {username}. Skipping.")
+                    logging.warning(f"Row {idx}: Profile(s) not found for user {username}. Skipping.")
                     continue
 
                 if not access_profile_id:
@@ -160,9 +160,9 @@ if __name__ == "__main__":
                 response = session.post(post_url, headers=headers_post, data=payload)
 
                 if response.status_code == 200:
-                    print(f"Successfully assigned {username} to {rights_profile} with access profile {access_profile}.")
+                    logging.info(f"Row {idx}: Successfully assigned {username} to {rights_profile} with access profile {access_profile}.")
                 else:
-                    print(f"Failed to assign {username}: {response.status_code} - {response.text}")
+                    logging.error(f"Row {idx}: Failed to assign {username}: {response.status_code} - {response.text}")
 
             again = input("Do you want to process another CSV file? (y/n): ").strip().lower()
             if again != "y":

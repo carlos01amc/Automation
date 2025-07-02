@@ -16,8 +16,10 @@ Before running this tool, make sure you have the following installed on your com
 2. **Python Packages**
    Open your terminal and run this command to install the required packages:
    ```bash
-   pip install requests pandas
+   pip install requests pandas selenium
    ```
+3. **Google Chrome & ChromeDriver**
+   - Ensure that **Google Chrome** is installed.
 
 ## 📄 CSV Format
 

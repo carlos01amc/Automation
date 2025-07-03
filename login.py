@@ -116,6 +116,10 @@ if __name__ == "__main__":
     def process_csv_and_assign():
         while True:
             csv_path = input("Enter the path to the CSV file with user data: ").strip()
+
+            if (csv_path.startswith('"') and csv_path.endswith('"')) or (csv_path.startswith("'") and csv_path.endswith("'")):
+                csv_path = csv_path[1:-1]
+
             data = process_csv_users(csv_path)
 
             for idx, row in enumerate(data, start=2):

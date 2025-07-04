@@ -1,6 +1,6 @@
 import requests
 
-def get_access_profiles(bot, token, base_url="https://www.timeforstorm.eu/stormstudio"):
+def get_access_profiles(bot, token, base_url):
     url = f"{base_url}/objectprofiles/get"
     session = requests.Session()
     
@@ -38,7 +38,7 @@ def get_access_profiles(bot, token, base_url="https://www.timeforstorm.eu/storms
 
     return profiles
 
-def get_rights_profiles(bot, token, base_url="https://www.timeforstorm.eu/stormstudio"):
+def get_rights_profiles(bot, token, base_url):
     url = f"{base_url}/rightsprofiles/user"
     session = requests.Session()
 
@@ -81,7 +81,7 @@ def get_rights_profiles(bot, token, base_url="https://www.timeforstorm.eu/storms
 
     return rights_profiles
 
-def get_user_ids(bot, token, base_url="https://www.timeforstorm.eu/stormstudio"):
+def get_user_ids(bot, token, base_url):
     url = f"{base_url}/rightsprofiles/assignments"
     session = requests.Session()
 

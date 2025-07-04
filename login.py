@@ -102,7 +102,10 @@ if __name__ == "__main__":
     finally:
         logging.info("Token Extracted")
 
-    base_url = "https://www.timeforstorm.eu/stormstudio"
+    if region == Region.EU:
+        base_url = "https://www.timeforstorm.eu/stormstudio"
+    else:
+        base_url = "https://www.timeforstorm.com/stormstudio"
     post_url = f"{base_url}/userprofiles/addassignment"
 
     session = requests.Session()
